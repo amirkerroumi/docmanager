@@ -4,6 +4,14 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use GuzzleHttp\Client;
+
+
+use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class LoginController extends Controller
 {
@@ -34,6 +42,31 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest', ['except' => 'logout']);
+        //$this->middleware('guest', ['except' => 'logout']);
+    }
+
+    public function authenticate(Request $request)
+    {
+        $email = $request->input('email');
+        $pwd = $request->input('password');
+
+        $client = new Client();
+        $httpRequest['form_params'] = [
+                'grant_type' => 'password',
+                'client_id' => 1,
+                'client_secret' => '01buKMc1arjNvrpSBzXoLKBbt4JwLPhOaxgnyzwE',
+                'username' => $email,
+                'password' => $pwd
+            ];
+        $response = $client->request('POST', 'http://api.docmanager.app/oauth/token', $httpRequest);
+        if ($response instanceof PsrResponseInterface) {
+            $response = (new HttpFoundationFactory)->createResponse($response);
+        } elseif (! $response instanceof SymfonyResponse) {
+            $response = new Response($response);
+        } elseif ($response instanceof BinaryFileResponse) {
+            $response = $response->prepare(Request::capture());
+        }
+        $responseContent=json_decode($response->getContent(), true);
+        $access_token = $responseContent['access_token'];
     }
 }
