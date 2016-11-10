@@ -19,7 +19,7 @@ Route::get('/login', function () {
     return view('auth.login');
 });
 
-Route::post('/login', 'Auth\LoginController@authenticate');
+Route::post('/login', 'DocManagerAuth\LoginController@authenticate');
 
 Route::get('/register', function () {
     return view('auth.register');
@@ -31,9 +31,7 @@ Route::get('/password/reset', function () {
 
 Route::group(['middleware' => 'docmanager_auth'], function(){
 
-    Route::get('/home', function(){
-        return "Welcome Home";
-    });
+    Route::get('/home', 'HomeController@index');
 });
 
 

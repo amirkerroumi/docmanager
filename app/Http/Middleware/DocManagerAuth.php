@@ -24,6 +24,7 @@ class DocManagerAuth
                 return $next($request);
             }
         }
+        $request->session()->flush();
         return redirect('/login');
     }
 }
