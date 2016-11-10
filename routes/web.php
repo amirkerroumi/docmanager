@@ -29,3 +29,11 @@ Route::get('/password/reset', function () {
     return view('auth.passwords.reset');
 });
 
+Route::group(['middleware' => 'docmanager_auth'], function(){
+
+    Route::get('/home', function(){
+        return "Welcome Home";
+    });
+});
+
+
