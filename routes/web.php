@@ -16,17 +16,19 @@ Route::get('/', function () {
 });
 
 Route::get('/login', function () {
-    return view('auth.login');
+    return view('docmanagerauth.login');
 });
 
 Route::post('/login', 'DocManagerAuth\LoginController@authenticate');
 
 Route::get('/register', function () {
-    return view('auth.register');
+    return view('docmanagerauth.register');
 });
 
+Route::post('/register', 'DocManagerAuth\RegisterController@create');
+
 Route::get('/password/reset', function () {
-    return view('auth.passwords.reset');
+    return view('docmanagerauth.passwords.reset');
 });
 
 Route::group(['middleware' => 'docmanager_auth'], function(){

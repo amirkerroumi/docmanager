@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 
 
+use Mockery\CountValidator\Exception;
 use Validator;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
@@ -66,7 +67,7 @@ class LoginController extends Controller
         $pwd = $request->input('password');
 
         $client = new Client();
-        $httpRequest['form_params'] = [
+        $postData['form_params'] = [
                 'grant_type' => 'password',
                 'client_id' => 1,
                 'client_secret' => '01buKMc1arjNvrpSBzXoLKBbt4JwLPhOaxgnyzwE',
@@ -74,33 +75,40 @@ class LoginController extends Controller
                 'password' => $pwd
             ];
         $time = Carbon::now();
-        try
+        $response = $client->request('POST', 'http://api.docmanager.app/v1/oauth/token', $postData);
+        if ($response instanceof PsrResponseInterface)
         {
-            $response = $client->request('POST', 'http://api.docmanager.app/oauth/token', $httpRequest);
-            if ($response instanceof PsrResponseInterface) {
-                $response = (new HttpFoundationFactory)->createResponse($response);
-            } elseif (! $response instanceof SymfonyResponse) {
-                $response = new Response($response);
-            } elseif ($response instanceof BinaryFileResponse) {
-                $response = $response->prepare(Request::capture());
-            }
-            $responseContent=json_decode($response->getContent(), true);
-            $access_token = $responseContent['access_token'];
-            $access_token_expiring_time = $time->addSeconds($responseContent['expires_in']);
-            session(['access_token' => $access_token, 'access_token_expiring_time' => $access_token_expiring_time, 'username' => $email]);
-            return redirect('/home');
+            $response = (new HttpFoundationFactory)->createResponse($response);
         }
-        catch(ClientException $e)
+        elseif (! $response instanceof SymfonyResponse)
         {
-            $eMsg = $e->getMessage();
-            $res = strstr($eMsg, 'response:');
-            $jsonMsg = strstr($res, '{');
-            $msg = json_decode($jsonMsg, true)['message'];
-            $validator->getMessageBag()->add('password', $msg);
-            $validator->getMessageBag()->add('email', $msg);
-            return redirect('/login')->withErrors($validator)->withInput();
+            $response = new Response($response);
+        }
+        elseif ($response instanceof BinaryFileResponse)
+        {
+            $response = $response->prepare(Request::capture());
         }
 
+        $responseContent=json_decode($response->getContent(), true);
+        if($responseContent['success'])
+        {
+            $responseData = $responseContent['data'];
+            $access_token = $responseData['access_token'];
+            $access_token_expiration_time = Carbon::createFromTimestamp($responseData['expires_at']);
+
+            session(['access_token' => $access_token, '$access_token_expiration_time' => $access_token_expiration_time, 'username' => $email]);
+            return redirect('/home');
+        }
+        else
+        {
+            $errorInfo = $responseContent['message'];
+            if($errorInfo == "Invalid user credentials")
+            {
+                $validator->getMessageBag()->add('password', $errorInfo);
+                $validator->getMessageBag()->add('email', $errorInfo);
+                return redirect('/login')->withErrors($validator)->withInput();
+            }
+        }
 
     }
 }

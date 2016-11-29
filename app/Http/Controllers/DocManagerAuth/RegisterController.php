@@ -3,9 +3,18 @@
 namespace App\Http\Controllers\DocManagerAuth;
 
 use App\User;
+use GuzzleHttp\Client;
+use Symfony\Component\HttpFoundation\Request;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\RegistersUsers;
+
+use GuzzleHttp\Exception\ClientException;
+
+use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class RegisterController extends Controller
 {
@@ -49,23 +58,38 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed',
+            'email' => 'required|email|max:255',
+            'password' => 'required|min:5|confirmed',
         ]);
     }
 
     /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return User
+     * @param Request $request
      */
-    protected function create(array $data)
+    protected function create(Request $request)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
+        $formData['json'] = $request->all();
+        if(isset($formData['json']['_token']))
+        {
+            unset($formData['json']['_token']);
+        }
+
+        try
+        {
+            $client = new Client();
+            $response = $client->request('POST', 'http://api.docmanager.app/v1/user', $formData);
+            if ($response instanceof PsrResponseInterface) {
+                $response = (new HttpFoundationFactory)->createResponse($response);
+            } elseif (! $response instanceof SymfonyResponse) {
+                $response = new Response($response);
+            } elseif ($response instanceof BinaryFileResponse) {
+                $response = $response->prepare(Request::capture());
+            }
+            var_dump($response);
+        }
+        catch(ClientException $e)
+        {
+            $eMsg = $e->getMessage();
+        }
     }
 }
