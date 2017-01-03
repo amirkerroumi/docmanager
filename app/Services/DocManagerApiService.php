@@ -8,12 +8,11 @@
 
 namespace App\Services;
 
+use App\Exceptions\DocManagerApiExceptionHandler;
 use GuzzleHttp\Client;
 
-use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Carbon\Carbon;
+
 
 class DocManagerApiService
 {
@@ -24,6 +23,8 @@ class DocManagerApiService
 
     protected $clientId;
     protected $clientSecret;
+
+    use DocManagerApiExceptionHandler;
 
     /**
      * DocManagerApiService constructor.
@@ -49,20 +50,7 @@ class DocManagerApiService
         {
             $uri = $this->endPoint.'/'.$this->apiVersion.$arguments[0];
             $params = isset($arguments[1]) ? $arguments[1] : [];
-            $response = $this->client->request($method, $uri, $params);
-            if ($response instanceof PsrResponseInterface)
-            {
-                $response = (new HttpFoundationFactory)->createResponse($response);
-            }
-            elseif (! $response instanceof SymfonyResponse)
-            {
-                $response = new Response($response);
-            }
-            elseif ($response instanceof BinaryFileResponse)
-            {
-                $response = $response->prepare(Request::capture());
-            }
-            $response = json_decode($response->getContent(), true);
+            $response = $this->handleApiResponse($this->client->request($method, $uri, $params));
             return $response;
         }
     }
@@ -80,7 +68,10 @@ class DocManagerApiService
             'username' => $email,
             'password' => $password
         ];
-        $response = $this->post('/oauth/token', $params);
-        return $response;
+        $responseData = $this->post('/oauth/token', $params);
+        $access_token = $responseData['access_token'];
+        $access_token_expiration_time = Carbon::createFromTimestamp($responseData['expires_at']);
+        session(['access_token' => $access_token, '$access_token_expiration_time' => $access_token_expiration_time, 'username' => $email]);
+        return true;
     }
 }

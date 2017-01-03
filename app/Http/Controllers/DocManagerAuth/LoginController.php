@@ -74,7 +74,11 @@ class LoginController extends Controller
         $email = $request->input('email');
         $pwd = $request->input('password');
         $docManagerApiService = resolve('DocManagerApiService');
-        $response = $docManagerApiService->login($email, $pwd);
+        $login = $docManagerApiService->login($email, $pwd);
+        if($login)
+        {
+            return redirect('/home');
+        }
 
 //        $client = new Client();
 //        $postData['form_params'] = [
