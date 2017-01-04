@@ -16,8 +16,10 @@ class DocManagerApiServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->bind('DocManagerApiService', function(){
-            return new DocManagerApiService();
-        });
+        $this->app->bind('App\Services\ApiService', 'App\Services\DocManagerApiService');
+
+//        $this->app->bind('DocManagerApiService', function(){
+//            return new DocManagerApiService();
+//        });
     }
 }

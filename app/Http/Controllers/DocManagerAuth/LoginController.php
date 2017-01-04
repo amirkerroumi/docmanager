@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\DocManagerAuth;
 
 use App\Http\Controllers\Controller;
+use App\Services\ApiService;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -58,7 +59,7 @@ class LoginController extends Controller
      *
      * This method enables to request an access token from the API by passing the user credentials (username, pwd)
      */
-    public function authenticate(Request $request)
+    public function authenticate(Request $request, ApiService $apiService)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|max:255|',
@@ -73,8 +74,8 @@ class LoginController extends Controller
 
         $email = $request->input('email');
         $pwd = $request->input('password');
-        $docManagerApiService = resolve('DocManagerApiService');
-        $login = $docManagerApiService->login($email, $pwd);
+        //$apiService = resolve('DocManagerApiService');
+        $login = $apiService->login($email, $pwd);
         if($login)
         {
             return redirect('/home');

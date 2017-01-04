@@ -14,7 +14,7 @@ use GuzzleHttp\Client;
 use Carbon\Carbon;
 
 
-class DocManagerApiService
+class DocManagerApiService implements ApiService
 {
     protected $client;
 
