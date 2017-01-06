@@ -66,7 +66,8 @@ class LoginController extends Controller
             'password' => 'required|min:5',
         ]);
 
-        if ($validator->fails()) {
+        if ($validator->fails())
+        {
             return redirect('login')
                 ->withErrors($validator)
                 ->withInput();
@@ -75,55 +76,20 @@ class LoginController extends Controller
         $email = $request->input('email');
         $pwd = $request->input('password');
         //$apiService = resolve('DocManagerApiService');
-        $login = $apiService->login($email, $pwd);
-        if($login)
+        $loginResponse = $apiService->login($email, $pwd);
+        if (session()->has('access_token') && session()->has('access_token_expiration_time') && Carbon::now() < session('access_token_expiration_time'))
         {
             return redirect('/home');
         }
-
-//        $client = new Client();
-//        $postData['form_params'] = [
-//                'grant_type' => 'password',
-//                'client_id' => 1,
-//                'client_secret' => '01buKMc1arjNvrpSBzXoLKBbt4JwLPhOaxgnyzwE',
-//                'username' => $email,
-//                'password' => $pwd
-//            ];
-//        $time = Carbon::now();
-//        $response = $client->request('POST', 'http://api.docmanager.app/v1/oauth/token', $postData);
-//        if ($response instanceof PsrResponseInterface)
-//        {
-//            $response = (new HttpFoundationFactory)->createResponse($response);
-//        }
-//        elseif (! $response instanceof SymfonyResponse)
-//        {
-//            $response = new Response($response);
-//        }
-//        elseif ($response instanceof BinaryFileResponse)
-//        {
-//            $response = $response->prepare(Request::capture());
-//        }
-
-//        $responseContent=json_decode($response->getContent(), true);
-//        if($responseContent['success'])
-//        {
-//            $responseData = $responseContent['data'];
-//            $access_token = $responseData['access_token'];
-//            $access_token_expiration_time = Carbon::createFromTimestamp($responseData['expires_at']);
-//
-//            session(['access_token' => $access_token, '$access_token_expiration_time' => $access_token_expiration_time, 'username' => $email]);
-//            return redirect('/home');
-//        }
-//        else
-//        {
-//            $errorInfo = $responseContent['message'];
-//            if($errorInfo == "Invalid user credentials")
-//            {
-//                $validator->getMessageBag()->add('password', $errorInfo);
-//                $validator->getMessageBag()->add('email', $errorInfo);
-//                return redirect('/login')->withErrors($validator)->withInput();
-//            }
-//        }
-
+        else
+        {
+            $errorInfo = $loginResponse['message'];
+            if ($errorInfo == "Invalid user credentials")
+            {
+                $validator->getMessageBag()->add('password', $errorInfo);
+                $validator->getMessageBag()->add('email', $errorInfo);
+                return redirect('/login')->withErrors($validator)->withInput();
+            }
+        }
     }
 }

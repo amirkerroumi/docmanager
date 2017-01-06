@@ -30,15 +30,12 @@ trait DocManagerApiExceptionHandler
             $response = $response->prepare(Request::capture());
         }
         $response = json_decode($response->getContent(), true);
-        if($response['success'])
+        if($response['success'] || $response['error_type'] == 'docmanager_user_error')
         {
-            //TODO
-            $responseData = $response['data'];
-            return $responseData;
+            return $response;
         }
         else
         {
-            //TODO
             $this->displayErrorPage($response);
         }
     }
@@ -49,7 +46,7 @@ trait DocManagerApiExceptionHandler
         $debug = env('APP_DEBUG');
         if($debug)
         {
-            if($response['error_type'] == 'docmanager_error')
+            if($response['error_type'] == 'docmanager_api_error')
             {
                 $errorData['code'] = $response['code'];
                 $errorData['status'] = $response['status'];
@@ -93,10 +90,5 @@ trait DocManagerApiExceptionHandler
                 abort(404, $errorData);
                 return 0;
         }
-
-
-
-        //throw new \Exception($response['message']);
-        //abort(503, "503 message");
     }
 }

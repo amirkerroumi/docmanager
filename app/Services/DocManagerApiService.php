@@ -68,10 +68,14 @@ class DocManagerApiService implements ApiService
             'username' => $email,
             'password' => $password
         ];
-        $responseData = $this->post('/oauth/token', $params);
-        $access_token = $responseData['access_token'];
-        $access_token_expiration_time = Carbon::createFromTimestamp($responseData['expires_at']);
-        session(['access_token' => $access_token, '$access_token_expiration_time' => $access_token_expiration_time, 'username' => $email]);
-        return true;
+        $response = $this->post('/oauth/token', $params);
+        if(isset($response['data']))
+        {
+            $responseData = $response['data'];
+            $access_token = $responseData['access_token'];
+            $access_token_expiration_time = Carbon::createFromTimestamp($responseData['expires_at']);
+            session(['access_token' => $access_token, 'access_token_expiration_time' => $access_token_expiration_time, 'username' => $email]);
+        }
+        return $response;
     }
 }
