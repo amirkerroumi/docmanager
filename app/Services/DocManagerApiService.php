@@ -13,7 +13,9 @@ use GuzzleHttp\Client;
 
 use Carbon\Carbon;
 
-
+/*
+ * This Service class enables to interact with the "docmanager_api" API
+ */
 class DocManagerApiService implements ApiService
 {
     protected $client;
@@ -24,6 +26,7 @@ class DocManagerApiService implements ApiService
     protected $clientId;
     protected $clientSecret;
 
+    //Trait enabling to handle errors returned by the "docmanager_api" API
     use DocManagerApiExceptionHandler;
 
     /**
@@ -43,6 +46,9 @@ class DocManagerApiService implements ApiService
      * @param $arguments
      * @return $this|Response|mixed|SymfonyRespons
      */
+    /*
+     * This function handle GET, POST, PUT and DELETE http requests to the API
+     */
     public function __call($name, $arguments)
     {
         $method = strtoupper($name);
@@ -50,6 +56,10 @@ class DocManagerApiService implements ApiService
         {
             $uri = $this->endPoint.'/'.$this->apiVersion.$arguments[0];
             $params = isset($arguments[1]) ? $arguments[1] : [];
+            /*
+             * handleApiResponse() is defined in DocManagerApiExceptionHandler trait
+             * and it handles errors returned by the API
+             */
             $response = $this->handleApiResponse($this->client->request($method, $uri, $params));
             return $response;
         }
@@ -58,6 +68,11 @@ class DocManagerApiService implements ApiService
     /**
      * @param $email
      * @param $password
+     */
+    /*
+     * This class enables a user to login to the docmanager_api.
+     * If login is successful, the API will provide an access_token and an expiration time for it.
+     * The access_token and its expiration time are stored in session variables.
      */
     public function login($email, $password)
     {
@@ -69,7 +84,7 @@ class DocManagerApiService implements ApiService
             'password' => $password
         ];
         $response = $this->post('/oauth/token', $params);
-        if(isset($response['data']))
+        if($response['success'])
         {
             $responseData = $response['data'];
             $access_token = $responseData['access_token'];

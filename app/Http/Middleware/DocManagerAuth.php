@@ -14,8 +14,14 @@ class DocManagerAuth
      * @param  \Closure  $next
      * @return mixed
      */
+    /*
+     * This Middleware class handles requests where the user is supposed to be authenticated (logged in to the api)
+     */
     public function handle($request, Closure $next)
     {
+        /*
+         * Request handled normally if user is logged in and his session is valid, otherwise redirection to login page
+         */
         if($request->session()->has('access_token') && $request->session()->has('access_token_expiration_time'))
         {
             $time = Carbon::now();

@@ -61,11 +61,13 @@ class LoginController extends Controller
      */
     public function authenticate(Request $request, ApiService $apiService)
     {
+        //Form validator
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|max:255|',
             'password' => 'required|min:5',
         ]);
 
+        //If form validation fails, errors are returned to the form and displayed
         if ($validator->fails())
         {
             return redirect('login')
@@ -75,12 +77,13 @@ class LoginController extends Controller
 
         $email = $request->input('email');
         $pwd = $request->input('password');
-        //$apiService = resolve('DocManagerApiService');
+        //Using user credentials to login to the api
         $loginResponse = $apiService->login($email, $pwd);
-        if (session()->has('access_token') && session()->has('access_token_expiration_time') && Carbon::now() < session('access_token_expiration_time'))
+        if ($loginResponse['success'])
         {
             return redirect('/home');
         }
+        //If login to the api fails, errors are returned to the form and displayed
         else
         {
             $errorInfo = $loginResponse['message'];
