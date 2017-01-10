@@ -64,6 +64,14 @@ class RegisterController extends Controller
     }
 
     /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function index()
+    {
+        return view('docmanagerauth.register');
+    }
+
+    /**
      * @param Request $request
      */
     protected function create(Request $request)

@@ -15,16 +15,10 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-Route::get('/login', function () {
-    return view('docmanagerauth.login');
-});
-
+Route::get('/login', 'DocManagerAuth\LoginController@index');
 Route::post('/login', 'DocManagerAuth\LoginController@authenticate');
 
-Route::get('/register', function () {
-    return view('docmanagerauth.register');
-});
-
+Route::get('/register', 'DocManagerAuth\RegisterController@index');
 Route::post('/register', 'DocManagerAuth\RegisterController@create');
 
 Route::get('/password/reset', function () {
