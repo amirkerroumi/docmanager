@@ -15,6 +15,7 @@ use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use App\Services\ApiService;
 
 class RegisterController extends Controller
 {
@@ -29,7 +30,7 @@ class RegisterController extends Controller
     |
     */
 
-    use RegistersUsers;
+    //use RegistersUsers;
 
     /**
      * Where to redirect users after login / registration.
@@ -66,7 +67,7 @@ class RegisterController extends Controller
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function form()
     {
         return view('docmanagerauth.register');
     }
@@ -74,7 +75,7 @@ class RegisterController extends Controller
     /**
      * @param Request $request
      */
-    protected function create(Request $request)
+    protected function register(Request $request, ApiService $apiService)
     {
         $formData['json'] = $request->all();
         if(isset($formData['json']['_token']))
@@ -82,22 +83,15 @@ class RegisterController extends Controller
             unset($formData['json']['_token']);
         }
 
-        try
+        $response = $apiService->post('/user', $formData);
+
+        if($response['success'])
         {
-            $client = new Client();
-            $response = $client->request('POST', 'http://api.docmanager.app/v1/user', $formData);
-            if ($response instanceof PsrResponseInterface) {
-                $response = (new HttpFoundationFactory)->createResponse($response);
-            } elseif (! $response instanceof SymfonyResponse) {
-                $response = new Response($response);
-            } elseif ($response instanceof BinaryFileResponse) {
-                $response = $response->prepare(Request::capture());
-            }
-            var_dump($response);
+            return "User successfully created";
         }
-        catch(ClientException $e)
+        else
         {
-            $eMsg = $e->getMessage();
+            return redirect('register')->withErrors($response['user_messages'])->withInput();
         }
     }
 }

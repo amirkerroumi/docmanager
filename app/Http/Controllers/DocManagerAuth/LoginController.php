@@ -56,7 +56,7 @@ class LoginController extends Controller
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function form()
     {
         return view('docmanagerauth.login');
     }

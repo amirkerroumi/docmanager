@@ -46,7 +46,7 @@ class HomeController extends Controller
             $content = "Error: " . $msg;
         }
 
-        return "Welcome Home " . $request->session()->get('username') . " ! " . $content;
+        return "Welcome Home " . $request->session()->get('email') . " ! " . $content;
     }
 
     function isJSON($string)

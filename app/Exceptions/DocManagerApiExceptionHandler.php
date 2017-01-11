@@ -63,7 +63,7 @@ trait DocManagerApiExceptionHandler
                 $errorData['code'] = $response['code'];
                 $errorData['status'] = $response['status'];
                 $errorData['hint'] = $response['hint'];
-                $errorData['message'] = "Error message from API - " . $response['hint'];
+                $errorData['message'] = "Error message from API - " . $response['message'];
             }
             else if($response['error_type'] == 'php_error')
             {
