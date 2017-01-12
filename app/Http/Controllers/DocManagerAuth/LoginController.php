@@ -86,21 +86,15 @@ class LoginController extends Controller
         $email = $request->input('email');
         $pwd = $request->input('password');
         //Using user credentials to login to the api
-        $loginResponse = $apiService->login($email, $pwd);
-        if ($loginResponse['success'])
+        $response = $apiService->login($email, $pwd);
+        if ($response['success'])
         {
             return redirect('/home');
         }
         //If login to the api fails, errors are returned to the form and displayed
         else
         {
-            $errorInfo = $loginResponse['message'];
-            if ($errorInfo == "Invalid user credentials")
-            {
-                $validator->getMessageBag()->add('password', $errorInfo);
-                $validator->getMessageBag()->add('email', $errorInfo);
-                return redirect('/login')->withErrors($validator)->withInput();
-            }
+            return redirect('/login')->withErrors($response['user_messages'])->withInput();
         }
     }
 }

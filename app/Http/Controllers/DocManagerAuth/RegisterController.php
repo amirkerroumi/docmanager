@@ -77,6 +77,21 @@ class RegisterController extends Controller
      */
     protected function register(Request $request, ApiService $apiService)
     {
+        //Form validator
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255',
+            'password' => 'required|min:5|confirmed',
+        ]);
+
+        //If form validation fails, errors are returned to the form and displayed
+        if ($validator->fails())
+        {
+            return redirect('register')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $formData['json'] = $request->all();
         if(isset($formData['json']['_token']))
         {
