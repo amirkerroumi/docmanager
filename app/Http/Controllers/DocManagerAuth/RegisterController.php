@@ -98,7 +98,7 @@ class RegisterController extends Controller
             unset($formData['json']['_token']);
         }
 
-        $response = $apiService->post('/user', $formData);
+        $response = $apiService->register($formData);
 
         if($response['success'])
         {

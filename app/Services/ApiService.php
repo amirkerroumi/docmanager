@@ -12,4 +12,7 @@ interface ApiService
 {
     public function __call($name, $arguments);
     public function login($email, $password);
+    public function register($userData);
+    public function resetPassword($email);
+
 }

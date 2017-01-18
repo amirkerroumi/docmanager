@@ -25,7 +25,7 @@ Route::get('/password/reset', function () {
     return view('docmanagerauth.passwords.reset');
 });
 
-Route::post('/password/email', 'DocManagerAuth\ResetPasswordController@sendEmail');
+Route::post('/password/reset', 'DocManagerAuth\ResetPasswordController@sendEmail');
 
 Route::group(['middleware' => 'docmanager_auth'], function(){
 

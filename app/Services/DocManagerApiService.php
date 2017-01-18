@@ -55,14 +55,7 @@ class DocManagerApiService implements ApiService
         if(in_array($method, ['GET', 'POST', 'PUT', 'DELETE']))
         {
             $uri = $this->endPoint.'/'.$this->apiVersion.$arguments[0];
-            if($method == "POST")
-            {
-                $params['form_params'] = isset($arguments[1]) ? $arguments[1] : [];
-            }
-            else
-            {
-                $params = isset($arguments[1]) ? $arguments[1] : [];
-            }
+            $params = isset($arguments[1]) ? $arguments[1] : [];
             /*
              * handleApiResponse() is defined in DocManagerApiExceptionHandler trait
              * and it handles errors returned by the API
@@ -98,6 +91,19 @@ class DocManagerApiService implements ApiService
             $access_token_expiration_time = Carbon::createFromTimestamp($responseData['expires_at']);
             session(['access_token' => $access_token, 'access_token_expiration_time' => $access_token_expiration_time, 'email' => $email]);
         }
+        return $response;
+    }
+
+    public function register($userData)
+    {
+        $response = $this->post('/user', $userData);
+        return $response;
+    }
+
+    public function resetPassword($email)
+    {
+        $params['form_params'] = ['email' => $email];
+        $response = $this->post('/password/email', $params);
         return $response;
     }
 }

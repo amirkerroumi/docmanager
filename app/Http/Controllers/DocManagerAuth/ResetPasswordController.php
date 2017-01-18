@@ -50,7 +50,7 @@ class ResetPasswordController extends Controller
         }
 
         $email = $request->input('email');
-        $response = $apiService->post('/password/email', ['email' => $email]);
+        $response = $apiService->resetPassword($email);
         if ($response['success'])
         {
             return "You will receive an email with instructions on how to reset your password.";
