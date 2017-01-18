@@ -55,7 +55,14 @@ class DocManagerApiService implements ApiService
         if(in_array($method, ['GET', 'POST', 'PUT', 'DELETE']))
         {
             $uri = $this->endPoint.'/'.$this->apiVersion.$arguments[0];
-            $params = isset($arguments[1]) ? $arguments[1] : [];
+            if($method == "POST")
+            {
+                $params['form_params'] = isset($arguments[1]) ? $arguments[1] : [];
+            }
+            else
+            {
+                $params = isset($arguments[1]) ? $arguments[1] : [];
+            }
             /*
              * handleApiResponse() is defined in DocManagerApiExceptionHandler trait
              * and it handles errors returned by the API
