@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\DocManagerAuth;
 
 use App\Http\Controllers\Controller;
+use App\Services\ApiService;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Validator;
 
 class ResetPasswordController extends Controller
 {
@@ -28,5 +32,33 @@ class ResetPasswordController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    public function sendEmail(Request $request, ApiService $apiService)
+    {
+        //Form validator
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|max:255|',
+        ]);
+
+        //If form validation fails, errors are returned to the form and displayed
+        if ($validator->fails())
+        {
+            return redirect('/password/reset')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $email = $request->input('email');
+        $response = $apiService->post('/password/email', ['email' => $email]);
+        if ($response['success'])
+        {
+            return "You will receive an email with instructions on how to reset your password.";
+        }
+        //If login to the api fails, errors are returned to the form and displayed
+        else
+        {
+            return redirect('/password/reset')->withErrors($response['user_messages'])->withInput();
+        }
     }
 }
