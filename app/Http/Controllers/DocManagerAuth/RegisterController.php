@@ -102,7 +102,8 @@ class RegisterController extends Controller
 
         if($response['success'])
         {
-            return "User successfully created";
+            //return "User successfully created";
+            return redirect('register')->with('registered', true);
         }
         else
         {
