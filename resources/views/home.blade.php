@@ -1,7 +1,7 @@
 @extends('layouts.dm-layout')
 
 
-@include('layouts.dm-navbar')
+{{--@include('layouts.dm-navbar')--}}
 
 @section('content')
     <div class="container">
