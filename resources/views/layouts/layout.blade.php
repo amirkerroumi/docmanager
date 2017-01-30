@@ -13,7 +13,9 @@
     </head>
 
     <body>
+        @yield('header')
         @yield('content')
+        @yield('footer')
     </body>
 
     {{--<script src="/js/app.js"></script>--}}
