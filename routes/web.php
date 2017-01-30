@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return redirect('/login');
+    return view('index');
 });
 
 Route::get('/login', 'DocManagerAuth\LoginController@form');
