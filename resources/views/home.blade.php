@@ -1,4 +1,4 @@
-@extends('layouts.dm-layout')
+@extends('layouts.layout')
 
 
 {{--@include('layouts.dm-navbar')--}}
