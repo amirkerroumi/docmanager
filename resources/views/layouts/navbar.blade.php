@@ -23,7 +23,8 @@
       <ul class="nav navbar-nav navbar-right dm-link">
         <li><a href="#">About</a></li>
         <li><a href="#">Contact</a></li>
-        <li><a href="{{ url('/login') }}" style="margin: 0; padding: 0"><button type="button" class="btn navbar-btn dm-btn" id="btnSignIn">Sign in</button></a></li>
+        <li><a href="{{ url('/login') }}" class="dm-nav-btn-link"><button type="button" class="btn navbar-btn dm-btn-default">Sign in</button></a></li>
+        <li><a href="{{ url('/register') }}" class="dm-nav-btn-link"><button type="button" class="btn navbar-btn dm-btn">Sign up</button></a></li>
       </ul>
     </div>
 

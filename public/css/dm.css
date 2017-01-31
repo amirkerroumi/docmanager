@@ -6,7 +6,12 @@
 
 html
 {
-    background-color: #e3e3e3;
+    /*background-color: #e3e3e3;*/
+}
+
+a:hover, a:active, a:focus, a:visited
+{
+    color: deepskyblue;
 }
 
 /*----------------------------------------------------------NAV BAR & FOOTER----------------------------------------------------------------------*/
@@ -17,7 +22,7 @@ html
     border-bottom: 2px solid deepskyblue;
     background-color: white;
 }
-.dm-link > li > a
+.dm-link > li > a, .dm-link, .dm-link:hover
 {
     color: deepskyblue;
     font-family: Avenir;
@@ -29,7 +34,6 @@ html
     color: deepskyblue;
 }
 
-
 .footer {
     position: absolute;
     bottom: 0;
@@ -37,7 +41,8 @@ html
     margin-right: 10%;
     width: 80%;
     height: 6%;
-    background-color: #e3e3e3;
+    /*background-color: #e3e3e3;*/
+    background-color: transparent;
     font-weight: bold;
     border-top: 1px solid deepskyblue;
     color: deepskyblue;
@@ -46,7 +51,8 @@ html
 
 .footer-left
 {
-    text-align: left
+    text-align: left;
+    padding-top: 4px;
 }
 
 .footer-center, .footer-right
@@ -73,6 +79,7 @@ html
     background: rgba(0,0,0,0.6);
     color: deepskyblue;
     text-align: center;
+    border-bottom: 2px solid deepskyblue;
 }
 
 .p-jumbotron
@@ -117,4 +124,37 @@ html
     background-color: #0098cc;
     border-color: #0098cc;
     color: white;
+}
+
+#MyNavBarCollapse > ul > li > .dm-nav-btn-link
+{
+    padding: 0;
+    margin-left: 4px;
+}
+
+.dm-btn-default, .dm-btn-default:hover
+{
+    background-color: white;
+    border-color: deepskyblue;
+    color: deepskyblue;
+}
+
+/*----------------------------------------------------------LOG IN PAGE----------------------------------------------------------------------*/
+
+#dm-login-page
+{
+    color: deepskyblue;
+}
+
+#dm-login-page > .panel
+{
+    width: 40%;
+    margin: auto;
+    margin-top: 10%;
+    border-color: deepskyblue;
+}
+
+#dm-login-page > .dm-btn
+{
+    width: 400px;
 }
