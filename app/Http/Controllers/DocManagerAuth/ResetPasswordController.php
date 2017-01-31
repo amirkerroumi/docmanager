@@ -53,7 +53,8 @@ class ResetPasswordController extends Controller
         $response = $apiService->resetPassword($email);
         if ($response['success'])
         {
-            return "You will receive an email with instructions on how to reset your password.";
+            return redirect('/password/reset')->with('reset_email_sent', true);
+            //return "You will receive an email with instructions on how to reset your password.";
         }
         //If login to the api fails, errors are returned to the form and displayed
         else

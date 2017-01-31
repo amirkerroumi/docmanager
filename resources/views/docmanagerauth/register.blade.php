@@ -12,7 +12,6 @@
                 <form class="form" role="form" method="POST" action="{{ url('/register') }}">
                     {{ csrf_field() }}
 
-                    {{--TODO--}}
                     @if(session()->has('registered') && session('registered'))
                         You have been successfully registered. <a class="dm-link" href="{{ url('/login') }}">Log in here.</a>
                     @else

@@ -14,7 +14,7 @@
       </button>
 
       <!--Brand Logo-->
-      <a class="navbar-brand" href="{{ url('/') }}"><img src="pics/dm-icon.png" class="small-logo"></a>
+      <a class="navbar-brand" href="{{ url('/') }}"><img src="/pics/dm-icon.png" class="small-logo"></a>
     </div>
 
     <!--NAVBAR MENU-->

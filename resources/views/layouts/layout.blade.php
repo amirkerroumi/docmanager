@@ -4,10 +4,10 @@
     <head>
         <meta charset="UTF-8">
         <title>DocManager</title>
-        <link rel="icon" href="pics/dm-icon.png">
-        <link rel="stylesheet" href="css/bootstrap.min.css" >
+        <link rel="icon" href="/pics/dm-icon.png">
+        <link rel="stylesheet" href="/css/bootstrap.min.css" >
         {{--<link href="/css/app.css" rel="stylesheet">--}}
-        <link rel="stylesheet" href="css/dm.css">
+        <link rel="stylesheet" href="/css/dm.css">
 
 
     </head>

@@ -3,7 +3,7 @@
   <div class="container">
     <div class="row">
       <div class="col-xs-4 footer-left">
-        <img src="pics/dm-icon.png" class="small-logo">
+        <img src="/pics/dm-icon.png" class="small-logo">
       </div>
       <div class="col-xs-4 footer-center">
         <a href="#">About</a> | <a href="#">Contact</a> | <a href="#">Home</a>
